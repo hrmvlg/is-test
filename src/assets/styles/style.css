@@ -113,12 +113,25 @@ body {
   display: flex;
   flex-direction: row;
 }
+@media (max-width: 1024px) {
+  .container {
+    flex-direction: column;
+  }
+}
 
 .users {
   border: 2px solid gray;
-  width: 453px;
-  height: 700px;
-  overflow: scroll;
+  width: 455px;
+  height: 100%;
+  overflow: hidden;
+}
+@media (max-width: 1024px) {
+  .users {
+    width: 100%;
+    margin-bottom: 50px;
+    min-height: 250px;
+    min-width: 475px;
+  }
 }
 .users__list {
   display: flex;
@@ -160,6 +173,12 @@ body {
   align-items: start;
   row-gap: 20px;
 }
+@media (max-width: 1024px) {
+  .user-card {
+    width: 100%;
+    padding: 0;
+  }
+}
 .user-card__name {
   width: 100%;
 }
@@ -178,6 +197,13 @@ body {
   -moz-column-gap: 10px;
        column-gap: 10px;
   width: 100%;
+}
+@media (max-width: 768px) {
+  .user-card__content {
+    flex-direction: column;
+    row-gap: 30px;
+    min-width: 475px;
+  }
 }
 .user-card__info {
   width: 100%;

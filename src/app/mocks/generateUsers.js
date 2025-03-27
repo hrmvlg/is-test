@@ -16,7 +16,6 @@ const generateUsers = (numUsers) => {
 }
 
 const users = generateUsers(1000000);
-//const users = generateUsers(100);
 
 fs.writeFileSync('users.json', JSON.stringify(users, null, 2), 'utf8');
 console.log('Данные успешно сгенерированы и сохранены в users.json');

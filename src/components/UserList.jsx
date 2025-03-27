@@ -1,29 +1,37 @@
 import { FixedSizeList as List } from 'react-window';
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMoreUsers } from '../app/store/actions/fetchAction';
-import { setHeights } from '../app/store/actions/uiActions';
-import { useRef, useEffect } from 'react';
+import { setHeights, setWidth } from '../app/store/actions/uiActions';
+import { setItemsPerPage } from '../app/store/actions/paginationActions';
+import { useRef, useEffect, useCallback } from 'react';
 import UserItem from './UserItem';
 
 const UserListReactWindow = () => {
     const dispatch = useDispatch();
 
     const { users, usersCount } = useSelector((state) => state.users);
-    const { listHeight, loading } = useSelector((state) => state.ui);
+    const { listHeight, listWidth, loading } = useSelector((state) => state.ui);
     let lastItemIndex = users.length;
     const listRef = useRef(null);
 
-    useEffect(() => {
-        const checkRefs = () => {
-            if (listRef.current) {
-                const listHeight = listRef.current.getBoundingClientRect().height;
-                dispatch(setHeights(listHeight));
-            } else {
-                requestAnimationFrame(checkRefs);
-            }
-        };
-        checkRefs();
+    const checkRefs = useCallback(() => {
+        if (listRef.current) {
+            const listHeight = listRef.current.getBoundingClientRect().height;
+            const listWidth = listRef.current.getBoundingClientRect().width;
+            dispatch(setHeights(listHeight));
+            dispatch(setWidth(listWidth));
+            dispatch(setItemsPerPage(listHeight));
+        }
     }, [dispatch]);
+
+    useEffect(() => {
+        checkRefs();
+
+        window.addEventListener("resize", checkRefs);
+
+        return () => window.removeEventListener("resize", checkRefs);
+    }, [checkRefs]);
+
 
     const onItemsRendered = ({ visibleStopIndex }) => {
         if (visibleStopIndex === lastItemIndex - 1 && !loading) {
@@ -51,7 +59,7 @@ const UserListReactWindow = () => {
                 height={listHeight}
                 itemCount={usersCount}
                 itemSize={45}
-                width={450}
+                width={listWidth}
                 itemData={users}
                 onItemsRendered={onItemsRendered}
             >

@@ -1,12 +1,11 @@
 import { setUsers, setUsersCount, addUsers } from "./userActions";
-import { setPage, setItemsPerPage } from "./paginationActions";
+import { setPage } from "./paginationActions";
 import { setLoading } from "./uiActions";
 
-export const fetchInitialUsers = () => async (dispatch) => {
-    const itemsPerPage = Math.ceil((450 / 45) * 2.5);
-    const page = 1;
-    dispatch(setItemsPerPage(itemsPerPage));
-    dispatch(setPage(page));
+export const fetchInitialUsers = () => async (dispatch, getState) => {
+
+    const state = getState();
+    const { page, itemsPerPage } = state.pagination;
 
     if (!isNaN(itemsPerPage) || itemsPerPage != null) {
         try {
@@ -31,7 +30,7 @@ export const fetchMoreUsers = () => async (dispatch, getState) => {
 
     const state = getState();
     const { page, itemsPerPage } = state.pagination;
-    const usersCount = state.users.usersCount;
+    const { usersCount } = state.users;
 
     try {
         const response = await fetch(`http://localhost:3001/users?_page=${page + 1}&_per_page=${itemsPerPage}`);

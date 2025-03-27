@@ -9,10 +9,10 @@
     align-items: start;
     row-gap: 20px;
 
-    // @media (max-width: 1024px) {
-    //     width: 100%;
-    //     padding: 0;
-    // }
+    @media (max-width: 1024px) {
+        width: 100%;
+        padding: 0;
+    }
 
     &__name {
         width: 100%;
@@ -35,11 +35,11 @@
         column-gap: 10px;
         width: 100%;
 
-        // @media (max-width: 768px) {
-        //     flex-direction: column;
-        //     row-gap: 30px;
-        //     min-width: 475px;
-        // }
+        @media (max-width: 768px) {
+            flex-direction: column;
+            row-gap: 30px;
+            min-width: 475px;
+        }
     }
 
     &__info {

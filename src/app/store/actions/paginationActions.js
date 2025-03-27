@@ -5,6 +5,6 @@ export const setPage = (page) => {
     return { type: SET_PAGE, payload: page };
 };
 
-export const setItemsPerPage = (itemsPerPage) => {
-    return { type: SET_ITEMS_PER_PAGE, payload: itemsPerPage };
+export const setItemsPerPage = (listHeight) => {
+    return { type: SET_ITEMS_PER_PAGE, payload: listHeight };
 };
