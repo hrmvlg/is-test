@@ -1,66 +1,64 @@
-import UserItem from "./UserItem";
-import { useRef, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { fetchMoreUsers, setHeights } from "../app/store/actions";
+import { FixedSizeList as List } from 'react-window';
+import { useDispatch, useSelector } from "react-redux";
+import { fetchMoreUsers } from '../app/store/actions/fetchAction';
+import { setHeights } from '../app/store/actions/uiActions';
+import { useRef, useEffect } from 'react';
+import UserItem from './UserItem';
 
-export default function UserList() {
-
+const UserListReactWindow = () => {
     const dispatch = useDispatch();
 
-    const users = useSelector((state) => state.users);
-    const loading = useSelector((state) => state.loading);
-
-    const observerRef = useRef(null);
+    const { users, usersCount } = useSelector((state) => state.users);
+    const { listHeight, loading } = useSelector((state) => state.ui);
+    let lastItemIndex = users.length;
     const listRef = useRef(null);
-    const itemRef = useRef(null);
 
     useEffect(() => {
         const checkRefs = () => {
-            if (listRef.current && itemRef.current) {
+            if (listRef.current) {
                 const listHeight = listRef.current.getBoundingClientRect().height;
-                const itemHeight = itemRef.current.getBoundingClientRect().height;
-                dispatch(setHeights(listHeight, itemHeight));
+                dispatch(setHeights(listHeight));
             } else {
                 requestAnimationFrame(checkRefs);
             }
         };
-
         checkRefs();
     }, [dispatch]);
 
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting && !loading) {
-                    dispatch(fetchMoreUsers());
-                }
-            },
-            { threshold: 1.0 }
-        );
-
-        if (observerRef.current) {
-            observer.observe(observerRef.current);
+    const onItemsRendered = ({ visibleStopIndex }) => {
+        if (visibleStopIndex === lastItemIndex - 1 && !loading) {
+            dispatch(fetchMoreUsers());
         }
+    };
 
-        return () => observer.disconnect();
-    },
-        [dispatch, loading]
-    );
+    const Row = ({ index, style, data }) => {
+        const item = data[index];
+        if (!item) return null;
+
+        return (
+            <UserItem
+                style={style}
+                key={index}
+                id={item.id}
+                name={item.name}
+            />
+        )
+    };
 
     return (
-        <div className="users" ref={listRef}>
-            <ul className="users__list" >
-                {users.map((user) => (
-                    <UserItem
-                        key={user.id}
-                        id={user.id}
-                        name={user.name}
-                        ref={itemRef}
-                    />
-                ))}
-            </ul>
-            <div ref={observerRef} style={{ height: '20px' }} />
-            {loading && <div className="users-loader">Загрузка...</div>}
+        <div className="users" ref={listRef} >
+            <List
+                height={listHeight}
+                itemCount={usersCount}
+                itemSize={45}
+                width={450}
+                itemData={users}
+                onItemsRendered={onItemsRendered}
+            >
+                {Row}
+            </List>
         </div>
-    );
-}
+    )
+};
+
+export default UserListReactWindow;

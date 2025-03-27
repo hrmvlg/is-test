@@ -1,56 +1,34 @@
 import {
     SET_USERS,
+    SET_USERS_COUNT,
     ADD_USERS,
-    SET_PAGE,
-    SET_HEIGHTS,
-    SET_LOADING,
     GET_USER,
+    SAVE_USER,
     CHANGE_INPUT,
-    SAVE_USER
-} from "./actions";
+} from "../actions/userActions";
 
 const initialState = {
     users: [],
+    usersCount: null,
     user: {},
-    page: 1,
-    perPage: 20,
-    listHeight: 0,
-    itemHeight: 0,
-    loading: true,
     inputName: '',
     inputDepartment: '',
     inputCompany: '',
     inputJobTitle: '',
 };
 
-export function reducer(state = initialState, action) {
-    switch (action.type) {
+export function usersReducer(state = initialState, { type, payload, nameOfInput }) {
+    switch (type) {
 
-        case SET_USERS:
-            return { ...state, users: action.payload, loading: false };
+        case SET_USERS: return { ...state, users: payload, loading: false };
 
-        case ADD_USERS:
-            return {
-                ...state,
-                users: [...state.users, ...action.payload],
-            };
+        case SET_USERS_COUNT: return { ...state, usersCount: payload };
 
-        case SET_PAGE:
-            return { ...state, page: action.payload };
-
-        case SET_HEIGHTS:
-            return {
-                ...state,
-                listHeight: action.payload.listHeight,
-                itemHeight: action.payload.itemHeight,
-            };
-
-        case SET_LOADING:
-            return { ...state, loading: action.payload };
+        case ADD_USERS: return { ...state, users: [...state.users, ...payload], };
 
         case GET_USER:
             {
-                const itemIndex = state.users.findIndex(user => user.id === action.payload);
+                const itemIndex = state.users.findIndex(user => user.id === payload);
                 return {
                     ...state,
                     user: state.users[itemIndex],
@@ -59,10 +37,7 @@ export function reducer(state = initialState, action) {
                     inputCompany: state.users[itemIndex].company,
                     inputJobTitle: state.users[itemIndex].jobTitle,
                 };
-            }
-
-        case CHANGE_INPUT:
-            return { ...state, [action.nameOfInput]: action.payload };
+            };
 
         case SAVE_USER:
             {
@@ -79,11 +54,13 @@ export function reducer(state = initialState, action) {
                     ...state,
                     users: updatedUsers
                 };
-            }
+            };
+
+        case CHANGE_INPUT: {
+            return { ...state, [nameOfInput]: payload };
+        };
 
         default:
             return state;
     }
 };
-
-export default reducer;

@@ -1,25 +1,27 @@
 import UserIcon from "../assets/imgs/icon-user.svg?react";
 import { useDispatch } from 'react-redux';
-import { getUser } from '../app/store/actions';
-import { forwardRef } from "react";
+import { getUser } from '../app/store/actions/userActions';
 
-const UserItem = forwardRef(({ id, name }, ref) => {
+const UserItem = ({ id, name, style }) => {
     const dispatch = useDispatch();
-
     const handleClickOnItem = (id) => {
         dispatch(getUser(id));
     }
 
     return (
-        <li className="users__item" onClick={() => handleClickOnItem(id)} ref={ref}>
+        <div
+            className="users__item"
+            onClick={() => handleClickOnItem(id)}
+            style={style}
+        >
             <div className="users__item-icon">
                 <UserIcon />
             </div>
             <div className="users__item-name">
                 {name}
             </div>
-        </li>
+        </div>
     )
-});
+};
 
 export default UserItem;

@@ -2,25 +2,12 @@ import UserIcon from "../assets/imgs/icon-user.svg?react";
 import Button from "./Button";
 import { useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { changeInput } from "../app/store/actions";
+import { changeInput } from "../app/store/actions/userActions";
 
 export default function UserCard() {
 
-    const inputRef = useRef(null);
-    useEffect(() => {
-        if (inputRef.current) {
-            inputRef.current.focus();
-        }
-    }, []);
-
     const dispatch = useDispatch();
-
-    //const { name, department, company, jobTitle } = useSelector((state) => state.user);
-
-    const inputName = useSelector((state) => state.inputName);
-    const inputJobTitle = useSelector((state) => state.inputJobTitle);
-    const inputDepartment = useSelector((state) => state.inputDepartment);
-    const inputCompany = useSelector((state) => state.inputCompany);
+    const { inputName, inputJobTitle, inputDepartment, inputCompany } = useSelector((state) => state.users);
 
     const handleChange = (e) => {
         const elementName = e.target.name;
@@ -28,6 +15,13 @@ export default function UserCard() {
 
         dispatch(changeInput(elementName, elementValue));
     };
+
+    const inputRef = useRef(null);
+    useEffect(() => {
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, []);
 
     return (
         <div className="user-card">

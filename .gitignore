@@ -27,3 +27,5 @@ dist-ssr
 *.css.map
 *.sass.map
 *.scss.map
+
+*.json
